@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginUserRequest;
+use Illuminate\View\View;
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
-    public function create()
+    public function create(): View
     {
         return view('auth.login');
     }
 
-    public function store(Request $request)
+    public function store(LoginUserRequest $request): RedirectResponse
     {
-        $attributes = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if(! Auth::attempt($attributes)){
+        if (!Auth::attempt($request->validated())) 
+        {
             throw ValidationException::withMessages([
                 'email' => 'Sorry, those credentials do not match',
             ]);
@@ -28,13 +26,16 @@ class SessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/');
+        return redirect()->route('jobs.index');
     }
 
-    public function destroy()
+    public function destroy(Request $request): RedirectResponse
     {
         Auth::logout();
 
-        return redirect('/');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('jobs.index');
     }
 }
