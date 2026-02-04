@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Requests\RegisterUserRequest;
-use Illuminate\Support\Facades\{Auth, DB, Hash};
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
