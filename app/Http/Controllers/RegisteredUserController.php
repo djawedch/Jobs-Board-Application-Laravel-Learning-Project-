@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Requests\RegisterUserRequest;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Hash};
 
 class RegisteredUserController extends Controller
 {
@@ -15,21 +15,27 @@ class RegisteredUserController extends Controller
 
     public function store(RegisterUserRequest $request)
     {
-        DB::transaction(function () use ($request) 
+        $user = DB::transaction(function () use ($request) 
         {
-            $user = User::create(
-                $request->validated(['name', 'email', 'password'])
-            );
+            $validated = $request->validated();
+
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
             $logoPath = $request->file('logo')->store('logos');
 
             $user->employer()->create([
-                'name' => $request->employer,
+                'name' => $validated['employer'],
                 'logo' => $logoPath,
             ]);
 
-            Auth::login($user);
+            return $user;
         });
+
+        Auth::login($user);
 
         return redirect()->route('jobs.index');
     }
