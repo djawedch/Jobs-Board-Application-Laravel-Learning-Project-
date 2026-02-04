@@ -14,6 +14,16 @@ class Tag extends Model
         'name',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function jobs(): BelongsToMany
     {
         return $this->belongsToMany(Job::class);
