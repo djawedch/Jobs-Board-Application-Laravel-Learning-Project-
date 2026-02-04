@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\File;
-use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\RegisterUserRequest;
+use Illuminate\Support\Facades\{Auth, DB};
 
 class RegisteredUserController extends Controller
 {
@@ -15,30 +13,24 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    public function store(Request $request)
+    public function store(RegisterUserRequest $request)
     {
-        $userAttributes = $request->validate([
-            'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(6)],
-        ]);
+        DB::transaction(function () use ($request) 
+        {
+            $user = User::create(
+                $request->validated(['name', 'email', 'password'])
+            );
 
-        $employerAttributes = $request->validate([
-            'employer' => ['required'],
-            'logo' => ['required', File::types(['png', 'jpg', 'webp'])],
-        ]);
+            $logoPath = $request->file('logo')->store('logos');
 
-        $user = User::create($userAttributes);
+            $user->employer()->create([
+                'name' => $request->employer,
+                'logo' => $logoPath,
+            ]);
 
-        $logoPath = $request->logo->store('logos');
+            Auth::login($user);
+        });
 
-        $user->employer()->create([
-            'name' => $employerAttributes['employer'],
-            'logo' => $logoPath,
-        ]);
-
-        Auth::login($user);
-
-        return redirect('/');
+        return redirect()->route('jobs.index');
     }
 }
