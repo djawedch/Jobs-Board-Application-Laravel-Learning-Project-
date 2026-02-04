@@ -7,21 +7,32 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [JobController::class, 'index']);
+Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 
-Route::get('/jobs/create', [JobController::class, 'create'])->middleware('auth');
-Route::post('/jobs', [JobController::class, 'store'])->middleware('auth');
+Route::middleware('auth')->group(function () 
+{
+    Route::prefix('jobs')->controller(JobController::class)->group(function () {
+        Route::get('/create', 'create')->name('jobs.create');
+        Route::post('/', 'store')->name('jobs.store');
+    });
 
-Route::get('/search', SearchController::class);
-Route::get('/tags/{tag:name}', TagController::class);
+    Route::controller(SessionController::class)->group(function () {
+        Route::delete('/logout', 'destroy')->name('logout');
+    });
+});
 
 Route::middleware('guest')->group(function () 
 {
-    Route::get('/register', [RegisteredUserController::class, 'create']);
-    Route::post('/register', [RegisteredUserController::class, 'store']);
+    Route::controller(RegisteredUserController::class)->group(function () {
+        Route::get('/register', 'create')->name('register');
+        Route::post('/register', 'store')->name('register.store');
+    });
 
-    Route::get('/login', [SessionController::class, 'create']);
-    Route::post('/login', [SessionController::class, 'store']);
+    Route::controller(SessionController::class)->group(function () {
+        Route::get('/login', 'create')->name('login');
+        Route::post('/login', 'store')->name('login.store');
+    });
 });
 
-Route::delete('/logout', [SessionController::class, 'destroy'])->middleware('auth');
+Route::get('/search', SearchController::class)->name('search');
+Route::get('/tags/{tag:name}', TagController::class)->name('tags.show');
