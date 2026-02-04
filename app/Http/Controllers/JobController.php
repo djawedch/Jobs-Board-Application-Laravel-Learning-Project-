@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Job;
-use App\Models\Tag;
-use Illuminate\Http\Request as HttpRequest;
+use App\Models\{Job, Tag};
+use App\Http\Requests\StoreJobRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class JobController extends Controller
 {
     public function index()
     {
-        $jobs = Job::latest()->with(['employer', 'tags'])->get();
+        $jobs = Job::query()
+            ->latest()
+            ->with(['employer', 'tags'])
+            ->get();
 
         return view('jobs.index', [
             'jobs' => $jobs,
@@ -26,27 +27,27 @@ class JobController extends Controller
         return view('jobs.create');
     }
 
-    public function store(HttpRequest $request)
+    public function store(StoreJobRequest $request)
     {
-        $attributes = $request->validate([
-            'title' => ['required'],
-            'salary' => ['required'],
-            'location' => ['required'],
-            'schedule' => ['required', Rule::in(['Part Time', 'Full Time'])],
-            'url' => ['required', 'active_url'],
-            'tags' => ['nullable'],
-        ]);
+        $attributes = $request->validated();
 
         $attributes['featured'] = $request->has('featured');
 
         $job = Auth::user()->employer->jobs()->create(Arr::except($attributes, 'tags'));
 
-        if($attributes['tags'] ?? false){
-            foreach(explode(',', $attributes['tags']) as $tag) {
-                $job->tag($tag);
-            }
+        $this->attachTags($job, $attributes['tags'] ?? null);
+
+        return redirect()->route('jobs.index');
+    }
+
+    private function attachTags(Job $job, ?string $tags): void
+    {
+        if (! $tags) {
+            return;
         }
 
-        return redirect('/');
+        foreach(explode(',', $tags) as $tag) {
+            $job->tag(trim($tag));
+        }
     }
 }
