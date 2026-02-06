@@ -45,6 +45,11 @@ class JobController extends Controller
         return redirect()->route('jobs.index');
     }
 
+    public function show(Job $job): View
+    {
+        return view('jobs.show', ['job' => $job]);
+    }
+
     private function attachTags(Job $job, ?string $tags): void
     {
         if (!$tags) {

@@ -10,6 +10,7 @@ Route::middleware('auth')->group(function ()
     Route::prefix('jobs')->controller(JobController::class)->group(function () {
         Route::get('/create', 'create')->name('jobs.create');
         Route::post('/', 'store')->name('jobs.store');
+        Route::get('/{job}', 'show')->name('jobs.show');
     });
 
     Route::controller(SessionController::class)->group(function () {
