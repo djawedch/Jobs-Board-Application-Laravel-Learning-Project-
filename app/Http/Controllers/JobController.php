@@ -6,7 +6,6 @@ use App\Models\{Job, Tag};
 use App\Http\Requests\StoreJobRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -26,6 +25,8 @@ class JobController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Job::class);
+
         return view('jobs.create');
     }
 
@@ -35,7 +36,11 @@ class JobController extends Controller
 
         $attributes['featured'] = $request->boolean('featured');
 
-        $job = Auth::user()->employer->jobs()->create(Arr::except($attributes, 'tags'));
+        $employer = $request->user()->employer;
+
+        $job = $employer->jobs()->create(
+            Arr::except($attributes, 'tags')
+        );
 
         $this->attachTags($job, $attributes['tags'] ?? null);
 
