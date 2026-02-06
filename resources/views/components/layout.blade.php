@@ -20,7 +20,10 @@
 
             @auth
                 <div class="space-x-6 font-bold flex">
-                    <a href="/jobs/create">Post a job</a>
+
+                    @can('create', App\Models\Job::class)
+                        <a href="{{ route('jobs.create') }}">Post a job</a>
+                    @endcan
 
                     <form method="POST" action="/logout">
                         @csrf
