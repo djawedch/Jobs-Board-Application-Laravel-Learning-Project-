@@ -20,7 +20,7 @@ class RegisterUserRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::min(6)],
             'role' => ['required', 'in:candidate,employer'],
 
-            'employer' => ['required_if:role,employer', 'nullable', 'string', 'max:255'],
+            'employer' => ['required_if:role,employer', 'nullable', 'string', 'max:255', 'unique:employers,name'],
             'logo' => ['required_if:role,employer', 'image', 'max:2048'],
         ];
     }

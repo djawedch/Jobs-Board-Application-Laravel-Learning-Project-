@@ -43,6 +43,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('jobs.index');
+        return redirect()
+            ->route('jobs.index')
+            ->with('success', 'Welcome ' . $user->name . '! Your account has been created successfully.');;
     }
 }
