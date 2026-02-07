@@ -10,6 +10,11 @@ use Illuminate\View\View;
 
 class JobController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Job::class, 'job');
+    }
+
     public function index(): View
     {
         $jobs = Job::query()
@@ -23,16 +28,14 @@ class JobController extends Controller
         ]);
     }
 
-    public function create(): View
-    {
-        $this->authorize('create', Job::class);
-
-        return view('jobs.create');
-    }
-
     public function show(Job $job): View
     {
         return view('jobs.show', ['job' => $job]);
+    }
+
+    public function create(): View
+    {
+        return view('jobs.create');
     }
 
     public function store(StoreJobRequest $request): RedirectResponse
@@ -57,8 +60,6 @@ class JobController extends Controller
 
     public function update(StoreJobRequest $request, Job $job): RedirectResponse
     {
-        $this->authorize('update', $job);
-
         $attributes = $request->validated();
 
         $job->update(Arr::except($attributes, 'tags'));
@@ -70,8 +71,6 @@ class JobController extends Controller
 
     public function destroy(Job $job)
     {
-        $this->authorize('delete', $job);
-
         $job->delete();
 
         return redirect()->route('jobs.index');

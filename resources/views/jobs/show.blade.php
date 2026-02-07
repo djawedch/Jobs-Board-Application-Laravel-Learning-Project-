@@ -21,12 +21,11 @@
         @endcan
 
         <div class="flex gap-3">
-            <a href="{{ route('jobs.index') }}"
-                class="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
-                Cancel
-            </a>
-
             @can('update', $job)
+                <a href="{{ route('jobs.index') }}"
+                    class="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
+                    Cancel
+                </a>
                 <a href="{{ route('jobs.edit', $job) }}"
                     class="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition">
                     Edit

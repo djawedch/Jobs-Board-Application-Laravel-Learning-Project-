@@ -13,8 +13,9 @@
     <div class="px-10">
         <nav class="flex justify-between items-center py-4 border-b border-white/10">
             <div>
-                <a href="/">
-                    <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="">
+                <a href="{{ route('jobs.index') }}"
+                    class="px-4 py-2 rounded-lg font-medium text-indigo-600">
+                    Job Portal
                 </a>
             </div>
 
