@@ -22,3 +22,15 @@ document.addEventListener("DOMContentLoaded", function () {
     candidateRadio.addEventListener("change", toggleEmployerFields);
     employerRadio.addEventListener("change", toggleEmployerFields);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.fixed.top-4');
+    
+    flashMessages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => message.remove(), 500);
+        }, 5000);
+    });
+});

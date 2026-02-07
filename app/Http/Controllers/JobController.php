@@ -51,7 +51,9 @@ class JobController extends Controller
 
         $this->tagService->attachTags($job, $attributes['tags'] ?? null);
 
-        return redirect()->route('jobs.index');
+        return redirect()
+            ->route('jobs.index')
+            ->with('success', 'Job created successfully!');
     }
 
     public function edit(Job $job): View
@@ -67,13 +69,17 @@ class JobController extends Controller
 
         $this->tagService->syncTags($job, $attributes['tags'] ?? null);
 
-        return redirect()->route('jobs.show', $job);
+        return redirect()
+            ->route('jobs.show', $job)
+            ->with('success', 'Job updated successfully!');
     }
 
     public function destroy(Job $job)
     {
         $job->delete();
 
-        return redirect()->route('jobs.index');
+        return redirect()
+            ->route('jobs.index')
+            ->with('success', 'Job deleted successfully!');
     }
 }
