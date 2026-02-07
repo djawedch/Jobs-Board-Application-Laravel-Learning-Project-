@@ -15,9 +15,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{job}', 'destroy')->name('jobs.destroy');
     });
 
-    Route::controller(SessionController::class)->group(function () {
-        Route::delete('/logout', 'destroy')->name('logout');
-    });
+    Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');
 });
 
 Route::middleware('guest')->group(function () {
