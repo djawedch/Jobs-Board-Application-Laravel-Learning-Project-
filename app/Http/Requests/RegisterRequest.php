@@ -51,4 +51,13 @@ class RegisterRequest extends FormRequest
             'logo.max' => 'The logo must not exceed 2MB in size.',
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'name' => trim($this->input('name')),
+            'email' => trim($this->input('email')),
+            'employer' => trim($this->input('employer', '')),
+        ]);
+    }
 }
