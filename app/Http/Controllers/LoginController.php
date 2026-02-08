@@ -8,7 +8,7 @@ use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class SessionController extends Controller
+class LoginController extends Controller
 {
     public function create(): View
     {

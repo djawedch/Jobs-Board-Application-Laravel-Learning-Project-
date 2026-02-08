@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{JobController, SessionController, RegisteredUserController, SearchController};
+use App\Http\Controllers\{JobController, LoginController, RegisterController, SearchController};
 
 Route::get('/search', SearchController::class)->name('search');
 
 Route::middleware('guest')->group(function () {
-    Route::controller(RegisteredUserController::class)->group(function () {
+    Route::controller(RegisterController::class)->group(function () {
         Route::get('/register', 'create')->name('register');
         Route::post('/register', 'store')->name('register.store');
     });
 
-    Route::controller(SessionController::class)->group(function () {
+    Route::controller(LoginController::class)->group(function () {
         Route::get('/login', 'create')->name('login');
         Route::post('/login', 'store')->name('login.store');
     });
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{job}', 'destroy')->name('jobs.destroy');
     });
 
-    Route::delete('/logout', [SessionController::class, 'destroy'])->name('logout');
+    Route::delete('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
 Route::controller(JobController::class)->group(function () {
