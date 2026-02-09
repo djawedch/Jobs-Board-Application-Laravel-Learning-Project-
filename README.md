@@ -1,6 +1,16 @@
 # Jobs-Board
 
-A full-featured job board platform built with Laravel where employers can post job listings and candidates can browse opportunities. This project evolved from a basic tutorial into a robust, production-ready application with advanced features and a clean component-based architecture.
+A job board platform built with Laravel where employers can publish job listings and candidates can browse opportunities.
+
+## Technical Highlights
+
+- Role-based authorization using Laravel Policies
+- Centralized validation via FormRequest classes
+- Referential integrity cleanup for many-to-many tags using model events
+- Service layer abstraction for tag management
+- Component-based Blade UI architecture
+- Secure file upload handling with validation and storage
+- Dynamic role-dependent registration flow
 
 ## Features
 
@@ -16,7 +26,7 @@ A full-featured job board platform built with Laravel where employers can post j
 - **Flash Notifications**: User-friendly success/error messages
 - **Blade Components**: Modular, reusable UI components
 
-### Planned Features
+### Planned
 
 - Job application system
 - User profile management
@@ -59,7 +69,7 @@ A full-featured job board platform built with Laravel where employers can post j
 1. **Clone the repository:**
     
     ```bash
-    git clone <https://github.com/djawedch/Jobs-Board.git>
+    git clone https://github.com/djawedch/Jobs-Board.git
     cd Jobs-Board
     ```
     
@@ -67,6 +77,7 @@ A full-featured job board platform built with Laravel where employers can post j
     
     ```bash
     composer install
+    npm install
     ```
     
 3. **Setup environment:**
@@ -94,79 +105,39 @@ A full-featured job board platform built with Laravel where employers can post j
     php artisan db:seed
     ```
     
-6. **Install frontend dependencies:**
+6. **Start development servers:**
     
     ```bash
-    npm install
+    Run in two terminals:
+
+    Terminal 1
+    npm run dev
+
+    Terminal 2
+    php artisan serve
     ```
     
-7. **Start development servers:**
-    
-    ```bash
-    npm run dev | php artisan serve
-    ```
-    
-8. **Visit `http://localhost:8000`** in your browser
+7. **Visit `http://localhost:8000`** in your browser
 
-## **Relationship Details**
+## Database Relationships
 
-### **1. User → Employer: One-to-One (Conditional)**
+### User → Employer (One-to-One)
 
-```php
-// User Model
-public function employer() {
-    return $this->hasOne(Employer::class);
-}
+A user with role `employer` owns one employer profile.
 
-// Employer Model
-public function user() {
-    return $this->belongsTo(User::class);
-}
-```
+### Employer → Job (One-to-Many)
 
-- A user with `role = 'employer'` has exactly one employer profile
-- Employer profile is created only when user selects employer role during registration
-- Access via: `$user->employer` or `$employer->user`
+An employer can create multiple job listings.
 
-### **2. Employer → Job: One-to-Many**
+### Job ↔ Tag (Many-to-Many)
 
-```php
-// Employer Model
-public function jobs() {
-    return $this->hasMany(Job::class);
-}
+Jobs can have multiple tags and tags can belong to multiple jobs.
 
-// Job Model
-public function employer() {
-    return $this->belongsTo(Employer::class);
-}
-```
-
-- An employer can create multiple job listings
-- Each job belongs to exactly one employer
-- Foreign key: `jobs.employer_id` references `employers.id`
-
-### **3. Job ↔ Tag: Many-to-Many**
-
-```php
-// Job Model
-public function tags() {
-    return $this->belongsToMany(Tag::class);
-}
-
-// Tag Model
-public function jobs() {
-    return $this->belongsToMany(Job::class);
-}
-```
-
-- A job can have multiple tags (e.g., "PHP", "Remote", "Full-time")
-- A tag can be applied to multiple jobs
-- Pivot table: `job_tag` with `job_id` and `tag_id`
+Unused tags are automatically removed when the last related job is deleted.
 
 ## **Key Implementation Details**
 
-### **Authentication System**
+### **Authentication**
 
 - Custom authentication without Breeze/Jetstream
 - Session-based authentication
@@ -176,43 +147,21 @@ public function jobs() {
 ### **Job Management**
 
 - RESTful resource controllers
-- Policy protection for edit/delete operations
+- Policy protection for create/edit/delete operations
 - Search functionality
 
 ### **File Handling**
 
 - Company logo upload with validation
 - Public disk storage
-- Intelligent placeholder system for seeders
-- Image optimization and validation
+- Seeder placeholders for images
 
 ### **UI/UX Features**
 
-- Responsive design with Tailwind CSS
-- Flash message system with auto-dismiss
+- Responsive Tailwind design
+- Auto-dismiss flash messages
 - Conditional form sections
-- Accessible form elements
-- Consistent spacing and typography
-
-## **Development Notes**
-
-### **Database Seeding**
-
-The seeder includes:
-
-- Sample employers and candidates
-- Job listings with realistic data
-- Company logos
-
-## **Learning Journey**
-
-This project started as a tutorial from **Jeffrey Way's Laravel course** but was significantly expanded with:
-
-- Custom authentication system
-- Advanced role management
-- Service layer implementation
-- Component-based architecture
-- Production-ready features
+- Accessible form components
 
 ## **Acknowledgments**
 
@@ -223,10 +172,4 @@ This project started as a tutorial from **Jeffrey Way's Laravel course** but w
 
 ## **License**
 
-This project is open-source and available for educational purposes. Originally based on Jeffrey Way's tutorial but extensively modified and expanded.
-
----
-
-## **Final Notes**
-
-This project represents a significant learning milestone in Laravel development. From basic CRUD operations to implementing a service layer and component architecture, it showcases progression from tutorial-based learning to building production-ready features.
+This project is open-source and available for educational purposes.
