@@ -108,6 +108,62 @@ A full-featured job board platform built with Laravel where employers can post j
     
 8. **Visit `http://localhost:8000`** in your browser
 
+## **Relationship Details**
+
+### **1. User → Employer: One-to-One (Conditional)**
+
+```php
+// User Model
+public function employer() {
+    return $this->hasOne(Employer::class);
+}
+
+// Employer Model
+public function user() {
+    return $this->belongsTo(User::class);
+}
+```
+
+- A user with `role = 'employer'` has exactly one employer profile
+- Employer profile is created only when user selects employer role during registration
+- Access via: `$user->employer` or `$employer->user`
+
+### **2. Employer → Job: One-to-Many**
+
+```php
+// Employer Model
+public function jobs() {
+    return $this->hasMany(Job::class);
+}
+
+// Job Model
+public function employer() {
+    return $this->belongsTo(Employer::class);
+}
+```
+
+- An employer can create multiple job listings
+- Each job belongs to exactly one employer
+- Foreign key: `jobs.employer_id` references `employers.id`
+
+### **3. Job ↔ Tag: Many-to-Many**
+
+```php
+// Job Model
+public function tags() {
+    return $this->belongsToMany(Tag::class);
+}
+
+// Tag Model
+public function jobs() {
+    return $this->belongsToMany(Job::class);
+}
+```
+
+- A job can have multiple tags (e.g., "PHP", "Remote", "Full-time")
+- A tag can be applied to multiple jobs
+- Pivot table: `job_tag` with `job_id` and `tag_id`
+
 ## **Key Implementation Details**
 
 ### **Authentication System**
