@@ -1,7 +1,4 @@
-@props([
-    'href',
-    'linkText',
-])
+@props(['href', 'linkText'])
 
 <div class="text-center text-sm text-gray-600 mt-6">
     {{ $slot }}

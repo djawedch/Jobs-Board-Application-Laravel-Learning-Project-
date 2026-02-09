@@ -4,10 +4,10 @@
     $attributes = $attributes->except('method');
 @endphp
 
-<form {{ $attributes->merge(['class' => 'max-w-2xl mx-auto space-y-6']) }}
-      method="{{ $htmlMethod }}"
-      enctype="{{ $attributes->get('enctype', 'application/x-www-form-urlencoded') }}"
->
+<form {{ $attributes->merge(['class' => 'max-w-2xl mx-auto space-y-6']) }} 
+    method="{{ $htmlMethod }}"
+    enctype="{{ $attributes->get('enctype', 'application/x-www-form-urlencoded') }}">
+    
     @if ($method !== 'GET')
         @csrf
         @method($method)
