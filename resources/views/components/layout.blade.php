@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job App Second Vesion</title>
+    <title>Job Portal App</title>
     @vite(['resources/js/app.js', 'resources/css/app.css'])
 </head>
 
@@ -53,7 +53,7 @@
                         <a href="{{ route('jobs.create') }}">Post a job</a>
                     @endcan
 
-                    <form method="POST" action="/logout">
+                    <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         @method('DELETE')
 
@@ -64,8 +64,8 @@
 
             @guest
                 <div class="space-x-6 font-bold">
-                    <a href="/register">Sign Up</a>
-                    <a href="/login">Log In</a>
+                    <a href="{{ route('register') }}">Sign Up</a>
+                    <a href="{{ route('login') }}">Log In</a>
                 </div>
             @endguest
 

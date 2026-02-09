@@ -1,1 +1,3 @@
-<h4 class="font-bold text-center text-4xl mb-8">{{ $slot }}</h4>
+<h4 class="font-bold text-center text-4xl mb-8">
+    {{ $slot }}
+</h4>
